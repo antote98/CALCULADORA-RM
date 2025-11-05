@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { AllWeights } from '../types';
 import { PERCENTAGES, REP_MAP, EXERCISES } from '../constants';
@@ -56,23 +55,40 @@ export const SummaryTable: React.FC<SummaryTableProps> = ({ allWeights }) => {
   };
 
   const handleDownloadPNG = async () => {
-    if (!tableContainerRef.current) return;
+    const element = tableContainerRef.current;
+    if (!element) return;
+
+    // Clone the node to modify styles without affecting the screen
+    const clone = element.cloneNode(true) as HTMLElement;
+    
+    // Style the clone for full capture
+    clone.style.position = 'absolute';
+    clone.style.left = '-9999px'; // Move it off-screen
+    clone.style.top = '0px';
+    clone.style.overflowX = 'visible';
+    clone.style.width = `${element.scrollWidth}px`; // Set width to full content width
+
+    document.body.appendChild(clone);
 
     try {
-      const canvas = await html2canvas(tableContainerRef.current, {
-        backgroundColor: '#1e293b', // slate-800
-        scale: 2, // Higher resolution
-      });
-      const link = document.createElement('a');
-      link.download = 'RM_Resumen.png';
-      link.href = canvas.toDataURL('image/png');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        const canvas = await html2canvas(clone, {
+            backgroundColor: '#1e293b', // slate-800
+            scale: 2, // Higher resolution
+        });
+        const link = document.createElement('a');
+        link.download = 'RM_Resumen.png';
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     } catch (error) {
-      console.error('Error generating PNG image:', error);
+        console.error('Error generating PNG image:', error);
+    } finally {
+        // Clean up the clone
+        document.body.removeChild(clone);
     }
   };
+
 
   return (
     <>
