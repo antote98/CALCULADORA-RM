@@ -1,0 +1,5 @@
+{
+  "name": "Calculadora de Peso RM",
+  "description": "Una calculadora vertical para estimar tu 1RM (Repetición Máxima) y los pesos correspondientes a diferentes porcentajes. Ingresa un peso en cualquier campo para calcular automáticamente los demás.",
+  "requestFramePermissions": []
+}
